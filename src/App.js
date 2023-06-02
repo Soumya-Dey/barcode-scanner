@@ -15,7 +15,7 @@ function App() {
   };
 
   const onKeyPressBarcode = async (event) => {
-    if (event.key == 'Enter') {
+    if (event.key === 'Enter') {
       setBarcode(event.target.value);
       alert(`Sannning Done\nBARCODE: ${event.target.value}`);
 
