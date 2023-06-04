@@ -5,7 +5,10 @@ import './App.css';
 
 function App() {
   const [barcode, setBarcode] = useState('');
+  const [barcodeScanned, setBarcodeScanned] = useState('');
   const [codes, setCodes] = useState([]);
+  const [suffix, setSuffix] = useState('aA');
+  const [machine, setMachine] = useState(-1);
 
   const barcodeAutoFocus = () => {
     document.getElementById('barcode').focus();
@@ -16,12 +19,24 @@ function App() {
   };
 
   const onKeyPressBarcode = async (event) => {
-    if (event.key === 'Enter') {
-      const [code, suffix] = event.target.value.split('@@@');
+    if (event.key === 'Enter' || event.keyCode === 17 || event.keyCode === 74) {
+      if (event.keyCode === 17 || event.keyCode === 74) event.preventDefault();
 
-      alert(`Sannning Done\nBARCODE: ${code}\nSUFFIX: ${suffix}`);
+      const [code, suffix] = event.target.value
+        ? event.target.value.split('-')
+        : barcodeScanned.split('-');
+      setBarcodeScanned(event.target.value || barcodeScanned);
+      setSuffix(suffix);
+
+      let machine = -1;
+      if (suffix === 'aA') machine = event.key === 'Enter' ? 1 : 2;
+      else if (suffix === 'aa') machine = event.key === 'Enter' ? 3 : 4;
+      else if (suffix === 'AA') machine = event.key === 'Enter' ? 5 : 6;
+      else if (suffix === 'Aa') machine = event.key === 'Enter' ? 7 : 8;
+      setMachine(machine);
+
       setBarcode('');
-      setCodes([...codes, { code, suffix }]);
+      setCodes([...codes, { code, suffix, machine }]);
 
       // SEND AN API REQUEST
     }
@@ -46,14 +61,14 @@ function App() {
           <tr>
             <th>CODE</th>
             <th>SUFFIX</th>
+            <th>MACHINE</th>
           </tr>
         </thead>
-        {codes.map((code) => (
-          <tr>
-            <td>{code.code}</td>
-            <td>{code.suffix}</td>
-          </tr>
-        ))}
+        <tr>
+          <td>{barcodeScanned.split('-')[0]}</td>
+          <td>{suffix}</td>
+          <td>{machine}</td>
+        </tr>
       </table>
     </div>
   );
