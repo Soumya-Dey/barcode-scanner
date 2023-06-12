@@ -1,45 +1,52 @@
 import { useState } from 'react';
-// import axios from 'axios';
+import EventEmitter from 'events';
+import axios from 'axios';
 
 import './App.css';
 
-function App() {
+let keys = [];
+// instantiatating the EventEmitter
+const eventHandler = new EventEmitter();
+eventHandler.on('keydown', (...args) => {
+  setTimeout(async () => {
+    console.log({ keys });
+
+    const { data } = await axios({
+      url: 'http://139.59.137.146:8000/srv/scan',
+      method: 'patch',
+      headers: {
+        'auth-token':
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQ3ZjUwYzc2Yzk0YWIxOWRiYjU3NTViIiwiY2xpZW50SWQiOiI2NDdmNTBjNzZjOTRhYjE5ZGJiNTc1NWEiLCJyb2xlIjoiZGlyZWN0b3IifSwiaWF0IjoxNjg2NTU5NjIzLCJleHAiOjE2ODc0MjM2MjN9.mkYxvW-kVXOkhaTVPEmBQpSEvGuRa_8mCH65dXvYw5A',
+      },
+      data: {
+        keys,
+      },
+    });
+    console.log({ data });
+    keys = [];
+  }, 1000);
+});
+
+const App = () => {
   const [barcode, setBarcode] = useState('');
-  const [barcodeScanned, setBarcodeScanned] = useState('');
-  const [codes, setCodes] = useState([]);
-  const [suffix, setSuffix] = useState('aA');
-  const [machine, setMachine] = useState(-1);
 
   const barcodeAutoFocus = () => {
     document.getElementById('barcode').focus();
   };
 
   const onChangeBarcode = (event) => {
-    setBarcode(event.target.value);
+    setBarcode(
+      event.target.value +
+        `${event.target.value.toLowerCase().endsWith('aa') ? ', ' : ''}`
+    );
   };
 
   const onKeyPressBarcode = async (event) => {
-    if (event.key === 'Enter' || event.keyCode === 17 || event.keyCode === 74) {
-      if (event.keyCode === 17 || event.keyCode === 74) event.preventDefault();
+    keys = [...keys, event.key];
 
-      const [code, suffix] = event.target.value
-        ? event.target.value.split('-')
-        : barcodeScanned.split('-');
-      setBarcodeScanned(event.target.value || barcodeScanned);
-      setSuffix(suffix);
+    if (event.keyCode === 17 || event.keyCode === 74) event.preventDefault();
+    if (event.key === 'Enter') eventHandler.emit('keydown');
 
-      let machine = -1;
-      if (suffix === 'aA') machine = event.key === 'Enter' ? 1 : 2;
-      else if (suffix === 'aa') machine = event.key === 'Enter' ? 3 : 4;
-      else if (suffix === 'AA') machine = event.key === 'Enter' ? 5 : 6;
-      else if (suffix === 'Aa') machine = event.key === 'Enter' ? 7 : 8;
-      setMachine(machine);
-
-      setBarcode('');
-      setCodes([...codes, { code, suffix, machine }]);
-
-      // SEND AN API REQUEST
-    }
     console.log({ event });
   };
 
@@ -56,22 +63,9 @@ function App() {
         onBlur={barcodeAutoFocus}
       />
       <h1>BARCODE SCANNER</h1>
-      <table className='codes'>
-        <thead>
-          <tr>
-            <th>CODE</th>
-            <th>SUFFIX</th>
-            <th>MACHINE</th>
-          </tr>
-        </thead>
-        <tr>
-          <td>{barcodeScanned.split('-')[0]}</td>
-          <td>{suffix}</td>
-          <td>{machine}</td>
-        </tr>
-      </table>
+      <p>{barcode}</p>
     </div>
   );
-}
+};
 
 export default App;
