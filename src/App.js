@@ -26,6 +26,7 @@ eventHandler.on('keydown', (...args) => {
     console.log({ data });
     keys = [];
   }, 1000);
+  // waiting for extra Control keystroke
 });
 
 const App = () => {
