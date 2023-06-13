@@ -12,11 +12,12 @@ eventHandler.on('keydown', (...args) => {
     console.log({ keys });
 
     const { data } = await axios({
-      url: 'http://139.59.137.146:8000/srv/scan',
+      // url: 'http://139.59.137.146:8000/srv/scan',
+      url: 'https://api.bterpx.com/srv/scan',
       method: 'patch',
       headers: {
         'auth-token':
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQ3ZjUwYzc2Yzk0YWIxOWRiYjU3NTViIiwiY2xpZW50SWQiOiI2NDdmNTBjNzZjOTRhYjE5ZGJiNTc1NWEiLCJyb2xlIjoiZGlyZWN0b3IifSwiaWF0IjoxNjg2NTU5NjIzLCJleHAiOjE2ODc0MjM2MjN9.mkYxvW-kVXOkhaTVPEmBQpSEvGuRa_8mCH65dXvYw5A',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQ3ZjUwZWE4MDYxNTZiZWY1NDcyY2Q5IiwiY2xpZW50SWQiOiI2NDdmNTBlYTgwNjE1NmJlZjU0NzJjZDgiLCJyb2xlIjoiZGlyZWN0b3IifSwiaWF0IjoxNjg2NjQ5NjUyLCJleHAiOjE2ODc1MTM2NTJ9.F5AQOcDYSr6N2uTzce-b3M1twSkcvwYXMFfJvvnI6I8',
       },
       data: {
         keys,
