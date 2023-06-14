@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import './App.css';
 
+//#region - for functionality
 let keys = [];
 // instantiatating the EventEmitter
 const eventHandler = new EventEmitter();
@@ -28,6 +29,7 @@ eventHandler.on('keydown', (...args) => {
   }, 1000);
   // waiting for extra Control keystroke
 });
+//#endregion - for functionality
 
 const App = () => {
   const [barcode, setBarcode] = useState('');
@@ -36,6 +38,7 @@ const App = () => {
     document.getElementById('barcode').focus();
   };
 
+  //#region - for functionality
   const onChangeBarcode = (event) => {
     setBarcode(
       event.target.value +
@@ -51,6 +54,7 @@ const App = () => {
 
     console.log({ event });
   };
+  //#endregion - for functionality
 
   return (
     <div className='App'>
